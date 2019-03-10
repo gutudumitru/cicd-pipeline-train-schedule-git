@@ -1,0 +1,31 @@
+// Gradle plugin for executing node scripts.
+plugins {
+    id "com.moowork.node" version "1.2.0"
+}
+
+// Install node and install node.js and npm
+node {
+    download = true
+}
+
+task build
+
+task zip(type: Zip) {
+    from ('.') {
+    include "*"
+    include "bin/**"
+    include "data/**"
+    include "node_modules/**"
+    include "public/**"
+    include "routes/**"
+    include "views/**"
+    }
+    destinationDir(file("dist"))
+    baseName "trainSchdule"
+
+}
+build.dependsOn zip
+build.dependsOn npm_build // this will run the npn_build task from the node plugin (wierd)
+npm_build.dependsOn npmInstall // this will install all the nodejs dependencies, comes from plugin
+npm_build.dependsOn npm_test
+npm_test.dependsOn npmInstall
